@@ -1,36 +1,43 @@
-import{
+
+import {
   auth,
-  ref,signInWithEmailAndPassword,
-  database
-}from './firebaseconfig.js'
+  signInWithEmailAndPassword,
+  // sendPasswordResetEmail
+} from './firebaseconfig.js'
 
+// Make sure to select the elements by their correct IDs
+var email = document.getElementById('exampleInputEmail1');
+var password = document.getElementById('exampleInputPassword1');
+var loginForm = document.querySelector('form'); // Select the form element
 
-let email = document.getElementById('exampleInputEmail1').value
-let password = document.getElementById('exampleInputPassword1').value
+// Use the 'submit' event on the form, not 'click' on the button
+loginForm.addEventListener('submit', handleLogin);
 
-signInWithEmailAndPassword(auth,email,password)
-  .then((userCredential) => {
-let loginDate = new Date()   
- const user = userCredential.user;
-    update(ref(database, 'user/' + user.uid), {
-        lastLogin:loginDate
-      })
-      .then(() => {
-        // Data saved successfully!
-        alert("user logged in in real time database")
+function handleLogin(e) {
+  e.preventDefault();
+
+  // Use the correct function to sign in with email and password
+  signInWithEmailAndPassword(auth, email.value, password.value)
+      .then((userCredential) => {
+          // Access the user from the userCredential object
+          const user = userCredential.user;
+
+          console.log("Login Success", user);
+
+          if (user.emailVerified === false) {
+              alert('Please verify your email address');
+              return;
+          }
+
+          // Save user data to localStorage (if needed)
+          localStorage.setItem('user', JSON.stringify(user));
+
+          // Redirect to the dashboard page
+          window.location.pathname = '/dashboard'; // Change '/dashboard' to your actual dashboard path
       })
       .catch((error) => {
-        console.log('error' , error);
+          console.error("ERROR", error.message);
+          // Handle and display the error appropriately
+          alert('Login failed. Check your email and password.');
       });
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log("there is an error " , errorMessage,"and this is error code ", errorCode);
-    
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log("error " , errorCode,"the is error message --->", errorMessage);
-  });
+}

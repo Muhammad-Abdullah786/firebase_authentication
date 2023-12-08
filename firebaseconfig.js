@@ -1,7 +1,8 @@
 
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-  import { getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword ,sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+  import { getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword ,sendPasswordResetEmail,GithubAuthProvider
+  ,GoogleAuthProvider,signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
   import { getDatabase,set ,ref,update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
   const firebaseConfig = {
@@ -18,12 +19,14 @@
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
   const auth = getAuth();
+  const provider = new GoogleAuthProvider();
+  const gitProvider = new GithubAuthProvider();
 //   const analytics = getAnalytics(app);
 
 export{
-    app,
+    app,gitProvider,
     auth,
     database,
     signInWithEmailAndPassword,update,sendPasswordResetEmail,
-    createUserWithEmailAndPassword,set, ref
+    createUserWithEmailAndPassword,set, ref,provider,signInWithPopup
 }
